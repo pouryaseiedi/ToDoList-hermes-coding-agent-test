@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+    <style>
+        :root { --accent: #4f46e5; --bg: #f4f5fb; --card: #fff; --muted: #6b7280; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg); color: #1f2937; display: flex; justify-content: center;
+            padding: 40px 16px;
+        }
+        .wrap { width: 100%; max-width: 560px; }
+        h1 { margin: 0 0 4px; font-size: 28px; }
+        .sub { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+        form.add { display: flex; gap: 8px; margin-bottom: 20px; }
+        form.add input {
+            flex: 1; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 10px;
+            font-size: 15px; outline: none;
+        }
+        form.add input:focus { border-color: var(--accent); }
+        button {
+            border: none; border-radius: 10px; padding: 12px 18px; font-size: 15px;
+            cursor: pointer; background: var(--accent); color: #fff; font-weight: 600;
+        }
+        button:hover { filter: brightness(0.95); }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li {
+            background: var(--card); border: 1px solid #e5e7eb; border-radius: 12px;
+            padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center;
+            gap: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        li.done .title { text-decoration: line-through; color: var(--muted); }
+        .title { flex: 1; font-size: 15px; word-break: break-word; }
+        .meta { font-size: 12px; color: var(--muted); display: block; margin-top: 2px; }
+        .actions a {
+            text-decoration: none; font-size: 13px; color: var(--accent);
+            margin-left: 10px; white-space: nowrap;
+        }
+        .actions a.del { color: #dc2626; }
+        .empty { text-align: center; color: var(--muted); padding: 30px 0; }
+        .footer { margin-top: 18px; text-align: right; }
+        .footer a { color: var(--muted); font-size: 13px; text-decoration: none; }
+        .footer a:hover { color: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>My To-Do List</h1>
+        <p class="sub">Saved locally with SQLite — your list survives page reloads & restarts.</p>
+
+        <form class="add" action="/add" method="post">
+            <input type="text" name="title" placeholder="What needs to be done?" autofocus required>
+            <button type="submit">Add</button>
+        </form>
+
+        {% if todos %}
+        <ul>
+            {% for t in todos %}
+            <li class="{% if t.done %}done{% endif %}">
+                <a href="/toggle/{{ t.id }}" title="Toggle complete" style="text-decoration:none;">
+                    <span style="font-size:18px;">{% if t.done %}✅{% else %}⬜{% endif %}</span>
+                </a>
+                <span class="title">
+                    {{ t.title }}
+                    <span class="meta">added {{ t.created }}</span>
+                </span>
+                <span class="actions">
+                    <a href="/toggle/{{ t.id }}">{% if t.done %}Undo{% else %}Done{% endif %}</a>
+                    <a class="del" href="/delete/{{ t.id }}">Delete</a>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="footer"><a href="/clear_done">Clear completed</a></div>
+        {% else %}
+        <div class="empty">No tasks yet. Add your first one above 👆</div>
+        {% endif %}
+    </div>
+</body>
+</html>
