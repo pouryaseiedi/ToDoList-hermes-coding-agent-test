@@ -31,6 +31,12 @@ pip install -r requirements.txt
 
 # 4. Run the app
 python app.py
+
+
+OR USE DOCKER:
+docker compose build
+docker compose up -d
+
 ```
 
 Then open **http://127.0.0.1:5000** in your browser.
